@@ -1,0 +1,15 @@
+.env
+
+__pycache__/
+*.pyc
+
+.venv/
+
+celerybeat-schedule
+celerybeat.pid
+
+.pytest_cache/
+.coverage
+
+.idea/
+.vscode/
