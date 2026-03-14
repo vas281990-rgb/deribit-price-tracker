@@ -1,0 +1,56 @@
+version: '3.9'
+ 
+services:
+ 
+  db:
+    image: postgres:15-alpine
+    # Official PostgreSQL image. Alpine version ensures minimal footprint.
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: deribit_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Named volume: persists DB data across container restarts.
+      # Without this, all data would be lost after 'docker compose down'.
+ 
+  redis:
+    image: redis:7-alpine
+    # Redis acts as the message broker for Celery. No extra config required.
+ 
+  app:
+    build: .
+    # Builds the image using the Dockerfile located in the project root.
+    ports:
+      - '8000:8000'
+      # Maps host port 8000 to container port 8000 (localhost:8000).
+    env_file: .env
+    # Passes environment variables from the .env file into the container.
+    depends_on:
+      - db
+      - redis
+    # Ensures database and broker start before the application.
+ 
+  celery_worker:
+    build: .
+    command: celery -A app.tasks.celery_app worker --loglevel=info
+    # Overrides the Dockerfile CMD to launch a Celery worker.
+    # The worker consumes and executes tasks from the Redis queue.
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+ 
+  celery_beat:
+    build: .
+    command: celery -A app.tasks.celery_app beat --loglevel=info
+    # Celery Beat is the scheduler. It pushes tasks to Redis at set intervals.
+    # Separating Beat and Worker allows for better scalability.
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+ 
+volumes:
+  postgres_data:
+  # Declaration of the named volume managed by Docker.
