@@ -1,3 +1,4 @@
+from functools import lru_cache
 from pydantic_settings import BaseSettings
  
 class Settings(BaseSettings):
@@ -9,7 +10,6 @@ class Settings(BaseSettings):
         env_file = '.env'
         # pydantic-settings reads automatically.env file
     
- 
-settings = Settings()
-# Singleton: one object for the whole app
-# Importing'settings' everywhere we need
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

@@ -1,6 +1,6 @@
 import aiohttp
 from typing import Optional
-from app.config import settings
+from app.config import get_settings
  
 class DeribitClient:
     """Async HTTP client for interacting with the Deribit API."""

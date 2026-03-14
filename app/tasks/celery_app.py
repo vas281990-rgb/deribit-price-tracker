@@ -1,6 +1,8 @@
 from celery import Celery
-from app.config import settings
- 
+from app.config import get_settings
+
+settings = get_settings()
+
 celery_app = Celery(
     'deribit_tracker',
     # App name used for identification in logs and monitoring tools (e.g., Flower).
