@@ -17,7 +17,7 @@ def test_get_latest_missing_ticker():
 def test_get_latest_not_found():
     """Test: Ticker is provided but no data exists in the repository; returns 404."""
     with patch(
-        'app.api.routes.prices.PriceRepository.get_latest',
+        'app.api.routers.prices.PriceRepository.get_latest',
         new_callable=AsyncMock,
         return_value=None,
     ):

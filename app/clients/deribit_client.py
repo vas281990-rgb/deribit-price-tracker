@@ -6,7 +6,7 @@ class DeribitClient:
     """Async HTTP client for interacting with the Deribit API."""
  
     def __init__(self):
-        self._base_url = settings.DERIBIT_BASE_URL
+        self._base_url = get_settings().DERIBIT_BASE_URL
         self._session: Optional[aiohttp.ClientSession] = None
         # Persistent session to leverage connection pooling; avoid re-creating sessions per request.
  
